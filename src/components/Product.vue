@@ -8,21 +8,20 @@
       />
     </div>
     <div class="col-8">
-      <h1>{{ name }}</h1>
-      <p>{{ description }}</p>
+      <h1>{{ product.name }}</h1>
+      <p>{{ product.description }}</p>
       <ul>
         <li
-          v-for="(feature, index) in features"
+          v-for="(feature, index) in product.features"
           v-text="feature"
           :key="index"
         ></li>
       </ul>
       <ul class="list-style-none p-0">
         <li
-          v-for="(color, index) in colors"
+          v-for="(color, index) in product.colors"
           :key="index"
           class="d-inline-block"
-          @mouseover="updateImage(index)"
         >
           <div
             id="circle"
@@ -32,7 +31,7 @@
           ></div>
         </li>
       </ul>
-      <p class="mt-3" v-if="stock > 0">Stock: {{ stock }}</p>
+      <p class="mt-3" v-if="product.stock > 0">Stock: {{ product.stock }}</p>
       <p class="mt-3" v-else>Out of stock</p>
 
       <input
@@ -41,7 +40,7 @@
         v-model="amount"
         class="form-control"
         min="0"
-        :max="stock"
+        :max="product.stock"
       />
       <div class="mt-3">
         <button
@@ -67,42 +66,37 @@
 </template>
 
 <script>
+import { store } from '../store';
 export default {
-  name: 'Product',
+  props: ['product'],
   data() {
     return {
-      name: 'Socks',
-      description: 'Warm and fuzzy cotton socks',
-      features: ['100% Cotton', 'Bacteria free', 'Variety of Colors'],
-      colors: ['blue', 'green'],
-      image: 'socks_blue.jpg',
-      stock: 100,
       amount: 0,
       selectedColor: '',
     };
   },
-  mounted() {
-    this.selectedColor = this.colors[0];
+  beforeMount() {
+    this.selectedColor = this.product.colors[0];
   },
   computed: {
+    image() {
+      return 'socks_' + this.selectedColor + '.jpg';
+    },
     isOutOfStock() {
-      return this.stock <= 0;
+      return this.product.stock <= 0;
     },
   },
   methods: {
-    updateImage(index) {
-      this.image = 'socks_' + this.colors[index] + '.jpg';
-    },
     selectColor(index) {
-      this.selectedColor = this.colors[index];
+      this.selectedColor = this.product.colors[index];
     },
     isColorSelected(index) {
       return {
-        active: this.selectedColor == this.colors[index],
+        active: this.selectedColor == this.product.colors[index],
       };
     },
     increment() {
-      if (this.amount >= this.stock) return;
+      if (this.amount >= this.product.stock) return;
 
       this.amount++;
     },
@@ -117,16 +111,19 @@ export default {
         return;
       }
 
-      if (this.stock <= 0) {
+      if (this.product.stock <= 0) {
         alert('Out of stock.');
         return;
       }
 
-      this.$emit('add-to-cart', {
-        amount: this.amount,
+      let payload = [...Array(this.amount).keys()].map((item) => {
+        return {
+          color: this.selectedColor,
+        };
       });
 
-      this.stock -= this.amount;
+      store.addToCart(payload);
+      store.decrementProductStock(this.product.id, this.amount);
 
       this.amount = 0;
     },

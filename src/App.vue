@@ -7,38 +7,29 @@
     </div>
     <div class="row mt-3">
       <div class="col-12 d-flex justify-content-end">
-        <Cart
-          :amount="amount"
-          @clearSelectedAmount="clearSelectedAmount"
-        ></Cart>
+        <Cart></Cart>
       </div>
     </div>
-    <Product @addToCart="addToCart"></Product>
+    <div v-for="(product, index) in store.products" :key="index">
+      <Product :product="product"></Product>
+    </div>
   </div>
 </template>
 
 <script>
+import { store } from './store';
 import { Navbar, Cart, Product } from './components';
 
 export default {
-  name: 'App',
   data() {
     return {
-      amount: 0,
+      store,
     };
   },
   components: {
     Navbar,
     Cart,
     Product,
-  },
-  methods: {
-    addToCart(value) {
-      this.amount = value.amount;
-    },
-    clearSelectedAmount() {
-      this.amount = 0;
-    },
   },
 };
 </script>

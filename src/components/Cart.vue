@@ -1,20 +1,14 @@
 <template>
-  <h5>Cart ({{ cart }})</h5>
+  <h5>Cart ({{ store.cart.length }})</h5>
 </template>
 
 <script>
+import { store } from '../store';
 export default {
-  name: 'Cart',
-  props: ['amount'],
   data() {
     return {
-      cart: 0,
+      store,
     };
-  },
-  updated() {
-    this.cart += this.amount;
-
-    this.$emit('clear-selected-amount');
   },
 };
 </script>
