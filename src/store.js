@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
 
-export const store = reactive({
+const store = reactive({
   cart: [],
   products: [
     {
@@ -19,3 +19,5 @@ export const store = reactive({
     this.products.find((item) => item.id == id).stock -= amount;
   },
 });
+
+export default store;

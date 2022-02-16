@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { store } from './store';
+import store from './store';
 import { Navbar, Cart, Product } from './components';
 
 export default {
