@@ -2,19 +2,40 @@
   <nav
     class="navbar navbar-expand navbar-dark bg-success d-flex justify-content-between align-items-center px-3"
   >
-    <a class="navbar-brand" href="#">Cart System</a>
+    <router-link to="/products" class="navbar-brand">Cart System</router-link>
 
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home</a>
+        <router-link to="/products" class="nav-link">Products</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link to="/cart" class="nav-link"
+          >Cart ({{ totalCartAmount }})</router-link
+        >
       </li>
     </ul>
   </nav>
 </template>
 
 <script>
+import store from '../store';
+
 export default {
   name: 'Navbar',
+  data() {
+    return {
+      store,
+    };
+  },
+  computed: {
+    totalCartAmount() {
+      if (store.cart.length == 0) return 0;
+
+      return store.cart.reduce((total, current) => {
+        return (total += current.amount);
+      }, 0);
+    },
+  },
 };
 </script>
 
